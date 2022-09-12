@@ -20,9 +20,22 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">{
-        this.state.monsters.map((monster)=>{
-            return <h1> {monster.name} </h1>
+      <div className="App">
+        <input
+          className='search-box'
+          type='search'
+          placeholder='Search Monsters'
+          onChange={(event)=>{
+            const filteredMonsters = this.state.monsters.filter((monster)=> {
+              return monster.name.includes(event.target.value);
+            });
+
+            this.setState(()=>{
+              return {monsters: filteredMonsters};
+            });
+          }}
+        />
+        {this.state.monsters.map((monster)=>{return <h1> {monster.name} </h1>
         })
       }</div>
     );
