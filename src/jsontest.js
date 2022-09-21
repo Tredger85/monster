@@ -1,6 +1,9 @@
-function getNumTransactions() {
-  let jsonString;
+// function getNumTransactions(ID){
+//   getNumTransactions(function (error,price){console.log(price)});
+// }
 
+
+function getNumTransactions(callback) {
   const https = require('https');
 
   const host = 'dummyjson.com';
@@ -8,29 +11,32 @@ function getNumTransactions() {
   const findingId = {
     hostname: host,
     port: 443,
-    // path: '/products/'+Id,
-    path: '/products/search?q=phone',
+    //path: '/products/'+Id,
+    path: '/products',
     method: 'GET',
   };
 
-  const req = https.request(findingId, (res => {
-    let info = [];
+  https.request(findingId, ( res => {
+    let info = '';
     console.log('status code', res.statusCode);
-    // console.log('header', res.headers);
-    //console.log('data', JSON.parse(res.))
-    // let data = '';
-    // req.on('data', chunk => {
-    //   data += chunk;
-    // });
     res.on('data', chunk => {
-      info.push(chunk)
-      console.log(JSON.parse(JSON.stringify(chunk)));
+      info+=chunk.toString();
+    }).on('end', listener =>{
+      console.log(info);
+
+      let initialValue = 0;
+      const parsed = JSON.parse(info).products.map(products => products.price).reduce(
+        (previousValue, currentValue) => previousValue + parseInt(currentValue, 10),
+        initialValue
+      );
+      callback(null, parsed);
+      // console.log(parsed);
+      // jsonString += 'inside' + parsed;
+      // console.log(jsonString);
     });
-    console.log(info)
-  }));
+  })).end();
 
-  req.end();
-
+  // console.log( jsonString);
 
   // if (req.data === []){
   //   console.log( "User Name Not Found" );
@@ -52,7 +58,7 @@ function getNumTransactions() {
 
 //getNumTransactions('jay');
 
-// getNumTransactions(1)
-// getNumTransactions(2)
 
-getNumTransactions()
+//getNumTransactions(2)
+
+//getNumTransactions()
